@@ -10,26 +10,28 @@ set_recursive_metatable(GT, GT_t.generic_ship) -- all ships have this
 GT.visual = {}
 GT.visual.shape = "NameHere"  -- name of LODs lua
 GT.visual.shape_dstr = "" -- if there is a destruction model it goes here
+--                                     all messurements are taken from the model in the 3d software
 
-GT.life = 7200; -- hit points
-GT.mass = 11339.809; -- KGs
-GT.max_velocity = 14.4 --M/S
-GT.race_velocity = 12.1 --M/S
-GT.economy_velocity = 7.7 --M/S 
-GT.economy_distance = 13,000 -- KM
-GT.race_distance = 2.778e+006
-GT.shipLength = 225.20 -- o.a in meters
-GT.Width = 43.90 --15 --meters
-GT.Height = 35.226 --335.226 from sea level I think
-GT.Length = 225.20 -- deck length I think
-GT.DeckLevel = 11.816 -- height of deck
-GT.X_nose = 107.0 -- bow wave
-GT.X_tail = -104.5 -- wake
-GT.Tail_Width = 8 --wake width
-GT.Gamma_max = 0.35 -- no idea
-GT.Om = 0.05 --no idea
-GT.speedup = 0.119249; --time it takes to accelerate
-GT.R_min = 665.8 -- turn radius
+GT.life = 7200; --                     hit points
+GT.mass = 11339.809; --                Displacmeent (kg)
+GT.max_velocity = 14.4 --              Maximum speed in (m/s)
+GT.race_velocity = 12.1 --             Maximum dash speed (m/s) 
+GT.economy_velocity = 7.7 --           Economic cruising speed (m/s)
+GT.economy_distance = 13,000 --        Range at cruising speed
+GT.race_distance = 2.778e+006 --       ships hav unlimited fuel so it dosen't really matter'
+GT.shipLength = 225.20 --              Waterline ship length (m)
+GT.Width = 43.90 --                    Beam (Width) (m)
+GT.Height = 35.226 --                  Height (Keel to top of mast?) (m)
+GT.Length = 225.20 --                  Total length (m)
+GT.DeckLevel = 11.816 --               Deck Height above waterline of flight deck (m)
+GT.X_nose = 107.0 --                   bow wave
+GT.X_tail = -104.5 --                  wake
+GT.Tail_Width = 8 --                   wake width
+GT.draft = 13 --                       from waterline to keel of the ship
+GT.Gamma_max = 0.35 --                 no idea
+GT.Om = 0.05 --                        no idea
+GT.speedup = 0.119249; --              time it takes to accelerate
+GT.R_min = 665.8 --                    turn radius
 
 GT.RCS = 100000 -- new in 2.7 ----estimated RCS in square meters
 GT.IR_emission_coeff = 0.9 -- new in 2.7 not sure the params
@@ -37,6 +39,7 @@ GT.IR_emission_coeff = 0.9 -- new in 2.7 not sure the params
 
 GT.TACAN		   = true;		--If it has TACAN say true if not say false or not have this entry
 GT.TACAN_position = {7.006,  43.155,  -14.1} --position of tacan TX	
+
 
 GT.ICLS = true; -- IF it has ICLS say true if not say false or not have this entry
 GT.ICLS_Localizer_position =  {-109.324,  9.685,  7.715, 189.0}	-- {x [m], y [m], z [m], yaw [deg]} 
@@ -50,15 +53,15 @@ MeatBallArg = 151,
 GlideslopeBasicAngle = 3.5, 
 VerticalCoverageAngle = 1.7
 }
-
+GT.LRLS = true; -- Long Range Line-up System
 GT.distFindObstacles = 10000
 
 
 GT.numParking = 2 -- runways
-GT.Plane_Num_ = 12 --number of planes, not sure if it matters in game
-GT.Helicopter_Num_ = 8 -- Number heli spawns
+GT.Plane_Num_ = 12 -- max number of planes, not sure if it matters in game
+GT.Helicopter_Num_ = 8 -- Number heli (spawns)
 
--- the new LOS stuff is still new to me but this is what I have found out by looking through the lua files
+-- the new LSO stuff is still new to me but this is what I have found out by looking through the lua files
 
 --LSO view          high quality edm file, whatever you named the connector , Visiblity arg   , Position of camera
 local LSO_Station = { HQ_model = "empty", dockConnector  = "LSO_VIEW" , hide_argument = 821 , cameraPos = {-110+1,19.8,-18+0.5,180}} --this camera pos works
@@ -111,44 +114,46 @@ GT.carrierIlluminationStates = {
 								}
 								
 --Damage Model
+--THE DAMAGE MODEL, THIS IS THE NAMES OF THE COLLISION SHELL NODES (names can be anything as long as it matches up) 
 GT.DM = {
-    { area_name = "NOSE_R_01", 				area_arg = 70, area_life = 150, area_fire = { connector = "FIRE_NOSE_R_01", size = 0.5}},
-	{ area_name = "NOSE_R_02", 				area_arg = 94, area_life = 150, area_fire = { connector = "FIRE_NOSE_R_02", size = 0.5}},
-	{ area_name = "CENTER_R_01", 			area_arg = 71, area_life = 150, area_fire = { connector = "FIRE_CENTER_R_01", size = 0.5}},
-	{ area_name = "CENTER_R_02", 			area_arg = 96, area_life = 150, area_fire = { connector = "FIRE_CENTER_R_02", size = 0.5}},
-    { area_name = "BACK_R", 				area_arg = 72, area_life = 300, area_fire = { connector = "FIRE_BACK_R", size = 0.5}},
+    --Hull          Mesh name                     Arg Number        Hit Points                           Name of Connector
+    { area_name = "COL_NOSE_R_01", 				area_arg = 75, area_life = 150, area_fire = { connector = "FIRE_NOSE_R_01", size = 0.5}},
+	{ area_name = "COL_NOSE_R_02", 				area_arg = 76, area_life = 150, area_fire = { connector = "FIRE_NOSE_R_02", size = 0.5}},
+	{ area_name = "COL_MIDDLE_R_01", 			area_arg = 77, area_life = 150, area_fire = { connector = "FIRE_CENTER_R_01", size = 0.5}},
+	{ area_name = "COL_MIDDLE_R_02", 			area_arg = 78, area_life = 150, area_fire = { connector = "FIRE_CENTER_R_02", size = 0.5}},
+    { area_name = "COL_BACK_R_01", 				area_arg = 79, area_life = 300, area_fire = { connector = "FIRE_BACK_R", size = 0.5}},
 	
-    { area_name = "NOSE_L_01", 				area_arg = 73, area_life = 150, area_fire = { connector = "FIRE_NOSE_L_01", size = 0.5}},
-	{ area_name = "NOSE_L_02", 				area_arg = 95, area_life = 150, area_fire = { connector = "FIRE_NOSE_L_02", size = 0.5}},
-    { area_name = "CENTER_L_01", 			area_arg = 74, area_life = 150, area_fire = { connector = "FIRE_CENTER_L_01", size = 0.5}},
-	{ area_name = "CENTER_L_02", 			area_arg = 97, area_life = 150, area_fire = { connector = "FIRE_CENTER_L_02", size = 0.5}},
-	{ area_name = "CENTER_L_03", 			area_arg = 98, area_life = 150},
-    { area_name = "BACK_L", 				area_arg = 75, area_life = 300, area_fire = { connector = "FIRE_BACK_L", size = 0.5}},
+    { area_name = "COL_NOSE_L_01", 				    area_arg = ##, area_life = 150, area_fire = { connector = "FIRE_NOSE_L_01", size = 0.5}},
+	{ area_name = "COL_NOSE_L_02", 			      	area_arg = ##, area_life = 150, area_fire = { connector = "FIRE_NOSE_L_02", size = 0.5}},
+    { area_name = "COL_CENTER_L_01", 			    area_arg = ##, area_life = 150, area_fire = { connector = "FIRE_CENTER_L_01", size = 0.5}},
+	{ area_name = "COL_CENTER_L_02", 		    	area_arg = ##, area_life = 150, area_fire = { connector = "FIRE_CENTER_L_02", size = 0.5}},
+	{ area_name = "COL_CENTER_L_03", 		    	area_arg = ##, area_life = 150},
+    { area_name = "COL_BACK_L", 				    area_arg = ##, area_life = 300, area_fire = { connector = "FIRE_BACK_L", size = 0.5}},
+	--Deck                                                                                                                                                           If aircraft Varrier this is needed
+	{ area_name = "COL_PALUBA_NOSE",			    area_arg = ##, area_life = 300, armour = {width = 0.030}, area_fire = { connector = "FIRE_PALUBA_NOSE", size = 0.8}, belongsToRunway = true},
+	{ area_name = "COL_PALUBA_MIDLE_01",		    area_arg = ##, area_life = 100, armour = {width = 0.030}, area_fire = { connector = "PALUBA_MIDLE_01", size = 0.8}, belongsToRunway = true},
+	{ area_name = "COL_PALUBA_MIDLE_02",		    area_arg = ##, area_life = 100, armour = {width = 0.030}, area_fire = { connector = "PALUBA_MIDLE_02", size = 0.8}, belongsToRunway = true},
+	{ area_name = "COL_PALUBA_BACK_01", 		    area_arg = ##, area_life = 100, armour = {width = 0.030}, area_fire = { connector = "PALUBA_BACK_01", size = 0.8}, belongsToRunway = true},
+	{ area_name = "COL_PALUBA_BACK_02", 		    area_arg = ##, area_life = 100, armour = {width = 0.030}, area_fire = { connector = "PALUBA_BACK_02", size = 0.8}, belongsToRunway = true},
+	--Island / Superstructure
+	{ area_name = "COL_BACK", 					    area_arg = ##, area_life = 100},
+	{ area_name = "COL_RUBKA",			     		area_arg = ##, area_life = 100, area_fire = { connector = "FIRE_RUBKA", size = 0.8}},
+	{ area_name = "COL_MACHTA",			    		area_arg = ##, area_life = 100},
+	{ area_name = "COL_TOWER",				    	area_arg = ##, area_life = 100},
+	--pontoons
+	{ area_name = "COL_ZA_NR",				    	area_arg = ##, area_life = 30},
+	{ area_name = "COL_ZA_BR",				    	area_arg = ##, area_life = 30},
+	{ area_name = "COL_ZA_BL",				    	area_arg = ##, area_life = 30},
+	{ area_name = "COL_NADSTROYKA_BR",			    area_arg = ##, area_life = 30},
+	{ area_name = "COL_NADSTROYKA_BL",			    area_arg = ##, area_life = 30},
+	{ area_name = "COL_ZRK_BR",					    area_arg = ##, area_life = 30},
+	{ area_name = "COL_ZRK_NR",					    area_arg = ##, area_life = 30},
 	
-	{ area_name = "PALUBA_NOSE",			area_arg = 76, area_life = 100, area_fire = { connector = "FIRE_PALUBA_NOSE", size = 0.8}},
-	{ area_name = "PALUBA_MIDLE_01",		area_arg = 77, area_life = 100, area_fire = { connector = "FIRE_PALUBA_MIDLE_01", size = 0.8}},
-	{ area_name = "PALUBA_MIDLE_02",		area_arg = 92, area_life = 100, area_fire = { connector = "FIRE_PALUBA_MIDLE_02", size = 0.8}},
-	{ area_name = "PALUBA_BACK_01", 		area_arg = 78, area_life = 100, area_fire = { connector = "FIRE_PALUBA_BACK_01", size = 0.8}},
-	{ area_name = "PALUBA_BACK_02", 		area_arg = 93, area_life = 100, area_fire = { connector = "FIRE_PALUBA_BACK_02", size = 0.8}},
-	
-	{ area_name = "BACK", 					area_arg = 79, area_life = 100},
-	{ area_name = "RUBKA",					area_arg = 80, area_life = 100, area_fire = { connector = "FIRE_RUBKA", size = 0.8}},
-	{ area_name = "MACHTA",					area_arg = 81, area_life = 100},
-	{ area_name = "TOWER",					area_arg = 82, area_life = 100},
-
-	{ area_name = "ZA_NR",					area_arg = 99, area_life = 30},
-	{ area_name = "ZA_BR",					area_arg = 100, area_life = 30},
-	{ area_name = "ZA_BL",					area_arg = 101, area_life = 30},
-	{ area_name = "NADSTROYKA_BR",			area_arg = 102, area_life = 30},
-	{ area_name = "NADSTROYKA_BL",			area_arg = 103, area_life = 30},
-	{ area_name = "ZRK_BR",					area_arg = 104, area_life = 30},
-	{ area_name = "ZRK_NR",					area_arg = 105, area_life = 30},
-	
-	
-	{ area_name = "LIFT_01",				area_arg = 109, area_life = 50},
-	{ area_name = "LIFT_02",				area_arg = 110, area_life = 50},
-	{ area_name = "LIFT_03",				area_arg = 111, area_life = 50},
-	{ area_name = "LIFT_04",				area_arg = 112, area_life = 50},
+	-- Deck Lifts
+	{ area_name = "COL_LIFT_01",				    area_arg = ##, area_life = 50},
+	{ area_name = "COL_LIFT_02",				    area_arg = ##, area_life = 50},
+	{ area_name = "COL_LIFT_03",				    area_arg = ##, area_life = 50},
+	{ area_name = "COL_LIFT_04",			    	area_arg = ##, area_life = 50},
 }
 
 --GT.WS[ws].pointer = "BRIDGE" --possible CA or Weapon controls??
@@ -172,7 +177,7 @@ local ws;
 GT.Name = "Liveries folder name" -- folder name for Liveries
 GT.DisplayName = _("name of ship") -- name in game in ME and on the tape at the bottom
 GT.DisplayNameShort = _("name") -- Label name
-GT.Rate = 5500.000000 
+GT.Rate = 5500.000000 -- Reward Points
 
 GT.Sensors = {  OPTIC = {"long-range naval optics", "long-range naval LLTV", "long-range naval FLIR"}, --optics types
                 RADAR = {"Tor 9A331", "carrier search radar"}, --radar types
